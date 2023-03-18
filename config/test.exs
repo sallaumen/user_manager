@@ -13,6 +13,10 @@ config :user_manager, UserManagerWeb.Endpoint,
   secret_key_base: "fq3U2QEDjeSVLeGThUwhZLHyfuzICxwqwGlD+s54CAJThLIIzs5OI8aeVXbaFK5J",
   server: false
 
-config :logger, level: :warning
+# For detailed test logs
+# config :logger, level: :info
+# or
+# config :logger, level: :debug
+config :logger, level: :none
 
 config :phoenix, :plug_init_mode, :runtime
