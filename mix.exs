@@ -21,7 +21,8 @@ defmodule UserManager.MixProject do
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_), do: ["lib"]
+  # -- temporary
+  defp elixirc_paths(_), do: ["lib", "test/support"]
 
   defp deps do
     [
@@ -34,7 +35,12 @@ defmodule UserManager.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:ex_machina, "~> 2.7.0", only: :test},
+      #      {:ex_machina, "~> 2.7.0", only: :test},
+      {:ex_machina, "~> 2.7.0"},
+      #                    https://hexdocs.pm/quantum/readme.html
+      {:quantum, "~> 3.5"},
+
+      #      https://hexdocs.pm/quantum/readme.html
 
       # Code quality
       {:credo, "~> 1.6.7", only: [:dev, :test], runtime: false},
