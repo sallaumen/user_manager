@@ -9,7 +9,11 @@ defmodule UserManager.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      dialyzer: [
+        plt_add_apps: [:mix, :ex_unit],
+        check_plt: true
+      ]
     ]
   end
 
@@ -20,7 +24,7 @@ defmodule UserManager.MixProject do
     ]
   end
 
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(env) when env in [:test, :dev], do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 
   defp deps do
@@ -34,7 +38,9 @@ defmodule UserManager.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:ex_machina, "~> 2.7.0", only: :test},
+      {:ex_machina, "~> 2.7.0"},
+      # https://hexdocs.pm/quantum/readme.html
+      {:quantum, "~> 3.5"},
 
       # Code quality
       {:credo, "~> 1.6.7", only: [:dev, :test], runtime: false},
@@ -45,7 +51,7 @@ defmodule UserManager.MixProject do
   defp aliases do
     [
       setup: ["deps.get", "ecto.setup"],
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.setup": ["ecto.create", "ecto.migrate"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.drop --quiet", "ecto.create --quiet", "ecto.migrate --quiet", "test"]
     ]

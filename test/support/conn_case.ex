@@ -16,6 +16,8 @@ defmodule UserManagerWeb.ConnCase do
   """
 
   use ExUnit.CaseTemplate
+  alias UserManager.DataCase
+  alias Phoenix.ConnTest
 
   using do
     quote do
@@ -32,7 +34,7 @@ defmodule UserManagerWeb.ConnCase do
   end
 
   setup tags do
-    UserManager.DataCase.setup_sandbox(tags)
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+    DataCase.setup_sandbox(tags)
+    {:ok, conn: ConnTest.build_conn()}
   end
 end

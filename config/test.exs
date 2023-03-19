@@ -6,7 +6,8 @@ config :user_manager, UserManager.Repo,
   hostname: "localhost",
   database: "user_manager_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
-  pool_size: 10
+  pool_size: 10,
+  log_level: :info
 
 config :user_manager, UserManagerWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
@@ -17,6 +18,6 @@ config :user_manager, UserManagerWeb.Endpoint,
 # config :logger, level: :info
 # or
 # config :logger, level: :debug
-config :logger, level: :none
+config :logger, backends: []
 
 config :phoenix, :plug_init_mode, :runtime
