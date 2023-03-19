@@ -16,8 +16,8 @@ defmodule UserManagerWeb.ConnCase do
   """
 
   use ExUnit.CaseTemplate
-  alias UserManager.DataCase
   alias Phoenix.ConnTest
+  alias UserManager.DataCase
 
   using do
     quote do

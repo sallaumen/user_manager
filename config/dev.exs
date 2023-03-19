@@ -17,6 +17,13 @@ config :user_manager, UserManagerWeb.Endpoint,
   secret_key_base: "u8F/ZI6jWaulDpRDTzIY6AjYLiidlIL+KGlQ+nUEPDaXbYIeVv+O9FYAi46LDima",
   watchers: []
 
+config :user_manager, UserManager.QuantumScheduler,
+  debug_logging: true,
+  overlap: false,
+  jobs: [
+    {"* * * * *", {UserManager.User.Updater, :update_all_points, []}}
+  ]
+
 config :user_manager, dev_routes: true
 
 config :logger, level: :info, format: "[$level] $message\n"

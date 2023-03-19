@@ -33,4 +33,11 @@ if config_env() == :prod do
       port: port
     ],
     secret_key_base: secret_key_base
+
+  config :user_manager, UserManager.QuantumScheduler,
+    debug_logging: true,
+    overlap: false,
+    jobs: [
+      {"* * * * *", {UserManager.User.Updater, :update_all_points, []}}
+    ]
 end
