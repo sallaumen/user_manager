@@ -7,6 +7,7 @@ defmodule UserManager.User.Updater do
 
   @batch_size 500
   @max_update_point 100
+  @update_max_threads 8
 
   @spec update_all_points() :: {table_size :: integer(), num_batches :: integer(), exec_time :: integer()}
   def update_all_points do
@@ -37,10 +38,19 @@ defmodule UserManager.User.Updater do
   defp do_update(_, 0 = _table_size), do: :noop
 
   defp do_update(num_batches, _) do
-    Enum.map(0..(num_batches - 1), fn batch ->
-      Repo.transaction(fn ->
-        insert_batch(batch)
-      end)
+    0..(num_batches - 1)
+    |> Enum.chunk_every(@update_max_threads)
+    |> Enum.map(fn batches ->
+      Task.async_stream(
+        batches,
+        fn batch ->
+          Repo.transaction(fn ->
+            insert_batch(batch)
+          end)
+        end,
+        max_concurrency: @update_max_threads
+      )
+      |> Enum.to_list()
     end)
   end
 
@@ -49,7 +59,7 @@ defmodule UserManager.User.Updater do
 
     update_sql =
       Repo.stream(from u in User, limit: @batch_size, offset: ^offset)
-      |> Task.async_stream(&update_points_and_prepare_data_to_update/1, max_concurrency: 10)
+      |> Task.async_stream(&update_points_and_prepare_data_to_update/1, max_concurrency: 4)
       |> Enum.map(fn {:ok, updated_user} -> updated_user end)
 
     Repo.insert_all(User, update_sql, conflict_target: :id, on_conflict: {:replace, [:points]})
