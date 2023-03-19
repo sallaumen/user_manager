@@ -15,7 +15,6 @@ defmodule UserManager.User.Updater do
     {num_batches, table_size} = count_number_of_batches()
 
     do_update(num_batches, table_size)
-    :timer.sleep(120_000)
     end_time = DateTime.utc_now()
     exec_time = DateTime.diff(end_time, start_time, :second)
     Logger.info("Finishing update at: #{end_time}")
