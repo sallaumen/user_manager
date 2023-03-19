@@ -11,12 +11,14 @@ defmodule UserManager.User.Updater do
   @spec update_all_points() :: {table_size :: integer(), num_batches :: integer(), exec_time :: integer()}
   def update_all_points do
     start_time = DateTime.utc_now()
+    Logger.info("Starting update at: #{start_time}")
     {num_batches, table_size} = count_number_of_batches()
 
     do_update(num_batches, table_size)
-
+    :timer.sleep(120_000)
     end_time = DateTime.utc_now()
     exec_time = DateTime.diff(end_time, start_time, :second)
+    Logger.info("Finishing update at: #{end_time}")
 
     log_execution_result(table_size, num_batches, exec_time)
     {table_size, num_batches, exec_time}
