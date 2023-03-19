@@ -19,7 +19,7 @@ config :user_manager, UserManagerWeb.Endpoint,
 
 config :user_manager, dev_routes: true
 
-config :logger, :console, format: "[$level] $message\n"
+config :logger, level: :info, format: "[$level] $message\n"
 
 config :phoenix, :stacktrace_depth, 20
 
