@@ -43,14 +43,16 @@ defmodule UserManager.User.Updater do
     |> Enum.map(fn batches ->
       Task.async_stream(
         batches,
-        fn batch ->
-          Repo.transaction(fn ->
-            insert_batch(batch)
-          end)
-        end,
+        &insert_batch_in_transaction/1,
         max_concurrency: @update_max_threads
       )
       |> Enum.to_list()
+    end)
+  end
+
+  defp insert_batch_in_transaction(batch) do
+    Repo.transaction(fn ->
+      insert_batch(batch)
     end)
   end
 
