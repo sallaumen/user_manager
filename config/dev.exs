@@ -7,7 +7,8 @@ config :user_manager, UserManager.Repo,
   database: "user_manager_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+  pool_size: 10,
+  timeout: 25_000
 
 config :user_manager, UserManagerWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4000],

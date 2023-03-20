@@ -39,7 +39,6 @@ defmodule UserManager.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:ex_machina, "~> 2.7.0"},
-      # https://hexdocs.pm/quantum/readme.html
       {:quantum, "~> 3.5"},
 
       # Code quality
