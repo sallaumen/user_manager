@@ -57,14 +57,17 @@ defmodule UserManager.User.Updater do
   end
 
   defp insert_batch(batch_num) do
+    update_sql = create_multi_line_update(batch_num)
+
+    Repo.insert_all(User, update_sql, conflict_target: :id, on_conflict: {:replace, [:points, :updated_at]})
+  end
+
+  defp create_multi_line_update(batch_num) do
     offset = batch_num * @batch_size
 
-    update_sql =
-      Repo.stream(from u in User, limit: @batch_size, offset: ^offset)
-      |> Task.async_stream(&update_points_and_prepare_data_to_update/1, max_concurrency: 4)
-      |> Enum.map(fn {:ok, updated_user} -> updated_user end)
-
-    Repo.insert_all(User, update_sql, conflict_target: :id, on_conflict: {:replace, [:points]})
+    Repo.stream(from u in User, limit: @batch_size, offset: ^offset)
+    |> Task.async_stream(&update_points_and_prepare_data_to_update/1, max_concurrency: 4)
+    |> Enum.map(fn {:ok, updated_user} -> updated_user end)
   end
 
   defp update_points_and_prepare_data_to_update(user) do
@@ -72,6 +75,7 @@ defmodule UserManager.User.Updater do
 
     user
     |> Map.put(:points, new_points)
+    |> Map.put(:updated_at, NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second))
     |> Map.from_struct()
     |> Map.drop([:__meta__])
   end
