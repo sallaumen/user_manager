@@ -8,7 +8,8 @@ defmodule UserManager.Application do
       UserManager.Repo,
       {Phoenix.PubSub, name: UserManager.PubSub},
       UserManagerWeb.Endpoint,
-      UserManager.QuantumScheduler
+      UserManager.QuantumScheduler,
+      UserManager.User.FetcherAgent
     ]
 
     opts = [strategy: :one_for_one, name: UserManager.Supervisor]

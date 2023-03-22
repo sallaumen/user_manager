@@ -1,5 +1,5 @@
 defmodule UserManagerWeb.UsersControllerTest do
-  use UserManagerWeb.ConnCase, async: true
+  use UserManagerWeb.ConnCase, async: false
 
   alias UserManager.Factories.UserFactory
 
@@ -12,7 +12,7 @@ defmodule UserManagerWeb.UsersControllerTest do
       user = UserFactory.insert(:user, points: 11)
 
       conn = get(conn, "/", min_number: 10)
-      assert [%{"id" => user.id, "points" => 11}] == json_response(conn, 200)
+      assert %{"timestamp" => nil, "users" => [%{"id" => user.id, "points" => 11}]} == json_response(conn, 200)
     end
 
     test "when more than 2 user over min_points exist, should return 2 reduced user data in list", %{conn: conn} do
@@ -21,7 +21,11 @@ defmodule UserManagerWeb.UsersControllerTest do
       _user3 = UserFactory.insert(:user, points: 13)
 
       conn = get(conn, "/", min_number: 10)
-      assert [%{"id" => user1.id, "points" => 11}, %{"id" => user2.id, "points" => 12}] == json_response(conn, 200)
+
+      assert %{
+               "timestamp" => nil,
+               "users" => [%{"id" => user1.id, "points" => 11}, %{"id" => user2.id, "points" => 12}]
+             } == json_response(conn, 200)
     end
 
     test "when no user found with points over min_number, should return empty list", %{conn: conn} do
@@ -29,7 +33,7 @@ defmodule UserManagerWeb.UsersControllerTest do
       UserFactory.insert(:user, points: 10)
 
       conn = get(conn, "/", min_number: 10)
-      assert [] == json_response(conn, 200)
+      assert %{"timestamp" => nil, "users" => []} == json_response(conn, 200)
     end
 
     test "when min_number is not a numeric value, should return error", %{conn: conn} do
