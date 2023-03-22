@@ -18,6 +18,8 @@ To do it, make sure you have docker installed, and you can use the following com
 
 (you might need `sudo`, depending on your machine configs)
 
+PS: In case you don't have docker, just ensure you have postgres running and configure `/config` with your db credentials.
+
 #### To start your Phoenix server:
 
   * Run `mix setup` to install and setup dependencies
