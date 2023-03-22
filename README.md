@@ -1,9 +1,10 @@
 # UserManager
 
 #### UserManager is a simple user administrator, with the following functionalities:
- - A million users at its database inserted by project's seeds.
- - A endpoint at `/` to fetch users with points above request's argument `min_number`.
- - A Periodic Task (CRON) to update every database User point by a random number from 0 to 100 each minute.
+ - Insert a million users at its database inserted by own project's seeds.
+ - Creates an endpoint at `/` at the API, to fetch users with points above request's argument `min_number`, and also return the `timestamp` from this endpoint's last call.
+ - Executes each minute at a PeriodicTask (a.k.a., CRON) to update every database User "points" value by a random number from 0 to 100.
+ - This app also provides you with great logs. In case more details are needed, is possible to change the `Logger` `:level` at `/config`.
 
 #### Installing Elixir and Erlang:
 
