@@ -16,7 +16,7 @@ defmodule UserManager.EntityMetadata.EntitiesMetadata do
     |> EntityMetadata.changeset(params)
     |> Repo.insert(
       conflict_target: :entity_name,
-      on_conflict: {:replace, [:entity_value]},
+      on_conflict: {:replace, [:entity_value, :updated_at]},
       returning: true
     )
   end

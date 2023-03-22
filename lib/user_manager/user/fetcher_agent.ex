@@ -41,7 +41,11 @@ defmodule UserManager.User.FetcherAgent do
   end
 
   defp update_last_call_datetime do
-    EntitiesMetadata.upsert(%{entity_name: @last_server_call_metadata_name, entity_value: get_now_as_string()})
+    EntitiesMetadata.upsert(%{
+      entity_name: @last_server_call_metadata_name,
+      entity_value: get_now_as_string(),
+      updated_at: NaiveDateTime.utc_now()
+    })
   end
 
   defp get_now_as_string do

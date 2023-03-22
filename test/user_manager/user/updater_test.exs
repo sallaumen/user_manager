@@ -10,13 +10,17 @@ defmodule UserManager.User.UpdaterTest do
       user_1 = UserFactory.insert(:user, points: 0)
       user_2 = UserFactory.insert(:user, points: 0)
       user_3 = UserFactory.insert(:user, points: 0)
+      :timer.sleep(1_000)
       assert {_table_size = 3, _, _} = Updater.update_all_points()
 
-      user_1 = Repo.get(User, user_1.id)
-      user_2 = Repo.get(User, user_2.id)
-      user_3 = Repo.get(User, user_3.id)
+      user_1_new = Repo.get(User, user_1.id)
+      user_2_new = Repo.get(User, user_2.id)
+      user_3_new = Repo.get(User, user_3.id)
 
-      assert user_1.points != 0 || user_2.points != 0 || user_3.points != 0
+      assert user_1_new.points != 0 || user_2_new.points != 0 || user_3_new.points != 0
+      assert user_1.updated_at != user_1_new.updated_at
+      assert user_2.updated_at != user_2_new.updated_at
+      assert user_3.updated_at != user_3_new.updated_at
     end
 
     test "when no user exists, should not update anything" do
