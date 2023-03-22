@@ -38,9 +38,10 @@ defmodule UserManager.User.FetcherAgentTest do
       :timer.sleep(1_000)
 
       %{last_call: last_call_2, users: []} = FetcherAgent.get_users_by_min_points(min_point, quantity)
-      refute is_nil(last_call_2)
+      assert {:ok, _} = NaiveDateTime.from_iso8601(last_call_2)
 
       %{last_call: last_call_3, users: []} = FetcherAgent.get_users_by_min_points(min_point, quantity)
+      assert {:ok, _} = NaiveDateTime.from_iso8601(last_call_3)
       assert last_call_2 != last_call_3
     end
 
