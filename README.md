@@ -11,6 +11,13 @@
  * Make sure you have `asdf` installed
  * Run `asdf install` to install Erlang and Elixir in the correct versions. (It follows .tool-versions file)
 
+#### Starting your database with docker:
+To start the application locally, first get a postgres database running.
+To do it, make sure you have docker installed, and you can use the following command at the root of the project:
+- `docker-compose up`
+
+(you might need `sudo`, depending on your machine configs)
+
 #### To start your Phoenix server:
 
   * Run `mix setup` to install and setup dependencies
