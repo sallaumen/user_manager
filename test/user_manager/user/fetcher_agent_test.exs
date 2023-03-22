@@ -35,6 +35,8 @@ defmodule UserManager.User.FetcherAgentTest do
       %{last_call: last_call_1, users: []} = FetcherAgent.get_users_by_min_points(min_point, quantity)
       assert is_nil(last_call_1)
 
+      :timer.sleep(1_000)
+
       %{last_call: last_call_2, users: []} = FetcherAgent.get_users_by_min_points(min_point, quantity)
       refute is_nil(last_call_2)
 

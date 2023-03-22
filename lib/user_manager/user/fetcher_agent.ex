@@ -45,6 +45,7 @@ defmodule UserManager.User.FetcherAgent do
   end
 
   defp get_now_as_string do
-    NaiveDateTime.to_string(NaiveDateTime.utc_now())
+    NaiveDateTime.utc_now()
+    |> NaiveDateTime.to_string()
   end
 end

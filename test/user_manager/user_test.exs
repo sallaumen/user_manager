@@ -1,6 +1,5 @@
 defmodule UserManager.UserTest do
   use UserManager.DataCase
-  alias Ecto.UUID
   alias UserManager.Factories.UserFactory
   alias UserManager.Users
 
@@ -12,9 +11,9 @@ defmodule UserManager.UserTest do
     end
 
     test "when user does not exist, should return {:error, detail} tuple" do
-      fake_uuid = UUID.generate()
+      fake_id = 1
 
-      assert Users.fetch_user_by_id(fake_uuid) == {:error, "User not found given for ID `#{fake_uuid}`"}
+      assert Users.fetch_user_by_id(fake_id) == {:error, "User not found given for ID `#{fake_id}`"}
     end
   end
 
@@ -82,7 +81,7 @@ defmodule UserManager.UserTest do
     end
 
     test "when user does not exist, should return {:error, detail} tuple" do
-      fake_id = UUID.generate()
+      fake_id = 9999
       fake_user = UserFactory.build(:user, id: fake_id, points: 5)
 
       assert {:error, _} = Users.update_user(fake_user, %{points: 10})

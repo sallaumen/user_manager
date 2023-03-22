@@ -5,13 +5,11 @@ defmodule UserManager.User do
   @updatable_fields [:points]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: integer(),
           points: integer,
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()
         }
-
-  @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "users" do
     field :points, :integer
