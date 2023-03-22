@@ -5,8 +5,10 @@ defmodule UserManagerWeb.UsersJSON do
     format_user_data(user, :complete)
   end
 
-  def render("list.json", %{users: users}) do
-    Enum.map(users, fn user -> format_user_data(user, :reduced) end)
+  def render("list.json", %{users: users, last_call_datetime: last_call_datetime}) do
+    users = Enum.map(users, fn user -> format_user_data(user, :reduced) end)
+
+    %{users: users, timestamp: last_call_datetime}
   end
 
   defp format_user_data(%User{} = user, :complete) do

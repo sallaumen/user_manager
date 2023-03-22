@@ -1,7 +1,7 @@
 defmodule UserManagerWeb.UsersController do
   use UserManagerWeb, :controller
   require Logger
-  alias UserManager.Users
+  alias UserManager.User.FetcherAgent
   alias UserManagerWeb.Controllers.Schemas.Users, as: UsersSchema
   alias UserManagerWeb.Utils.ErrorMessages
   alias UserManagerWeb.Utils.ParamsConverter
@@ -13,8 +13,9 @@ defmodule UserManagerWeb.UsersController do
     with %{valid?: true} <- UsersSchema.changeset(params),
          {:ok, min_number} <-
            ParamsConverter.try_converting_to_integer(params["min_number"], "min_number"),
-         users <- Users.find_users_by_min_point(min_number, @list_users_api_default_limit) do
-      render(conn, :list, users: users)
+         %{last_call: last_call_datetime, users: users} <-
+           FetcherAgent.get_users_by_min_points(min_number, @list_users_api_default_limit) do
+      render(conn, :list, %{users: users, last_call_datetime: last_call_datetime})
     else
       {:error, message} ->
         {:error, %{message: message}}
