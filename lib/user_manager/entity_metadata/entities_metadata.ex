@@ -1,16 +1,17 @@
 defmodule UserManager.EntityMetadata.EntitiesMetadata do
   require Logger
 
+  import Ecto.Query
   alias UserManager.EntityMetadata
   alias UserManager.Repo
+  alias UserManager.User
 
-  def fetch_by_name(entity_name) do
-    case Repo.get_by(EntityMetadata, entity_name: entity_name) do
-      nil -> {:error, "EntityMetadata not found for given entity_name `#{entity_name}`"}
-      entity -> {:ok, entity}
-    end
+  @spec find_by_name(entity_name :: String.t() | atom()) :: EntityMetadata.t() | nil
+  def find_by_name(entity_name) do
+    Repo.get_by(EntityMetadata, entity_name: entity_name)
   end
 
+  @spec upsert(params :: map()) :: EntityMetadata.t()
   def upsert(params) do
     %EntityMetadata{}
     |> EntityMetadata.changeset(params)

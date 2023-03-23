@@ -14,6 +14,15 @@ config :user_manager, UserManagerWeb.Endpoint,
   secret_key_base: "fq3U2QEDjeSVLeGThUwhZLHyfuzICxwqwGlD+s54CAJThLIIzs5OI8aeVXbaFK5J",
   server: false
 
+config :user_manager, UserManager.Application,
+  application_children: [
+    UserManagerWeb.Telemetry,
+    UserManager.Repo,
+    {Phoenix.PubSub, name: UserManager.PubSub},
+    UserManagerWeb.Endpoint,
+    UserManager.QuantumScheduler
+  ]
+
 # For detailed test logs
 # config :logger, level: :info
 # or

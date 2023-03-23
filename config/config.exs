@@ -3,6 +3,16 @@ import Config
 config :user_manager,
   ecto_repos: [UserManager.Repo]
 
+config :user_manager, UserManager.Application,
+  application_children: [
+    UserManagerWeb.Telemetry,
+    UserManager.Repo,
+    {Phoenix.PubSub, name: UserManager.PubSub},
+    UserManagerWeb.Endpoint,
+    UserManager.QuantumScheduler,
+    UserManager.User.FetcherAgent
+  ]
+
 # Configures the endpoint
 config :user_manager, UserManagerWeb.Endpoint,
   url: [host: "localhost"],

@@ -3,8 +3,31 @@ defmodule UserManager.User.FetcherAgentTest do
   alias UserManager.Factories.UserFactory
   alias UserManager.User
   alias UserManager.User.FetcherAgent
+  import ExUnit.CaptureLog
+
+  describe "start_link/1" do
+    test "when link not started, should start and return pid" do
+      assert {:ok, _pid} = FetcherAgent.start_link([])
+    end
+
+    test "when link already started, should return error and log" do
+      FetcherAgent.start_link([])
+      log = capture_log(fn -> assert {:error, {:already_started, _pid}} = FetcherAgent.start_link([]) end)
+
+      assert String.contains?(
+               log,
+               "[error] Failed stating `Elixir.UserManager.User.FetcherAgent` Genserver. Error: {:already_started"
+             )
+    end
+  end
 
   describe "get_users_by_min_points/2" do
+    setup do
+      start_supervised(FetcherAgent)
+
+      :ok
+    end
+
     test "when user exists but min_point above user point, should not find any user" do
       UserFactory.insert(:user, points: 10)
       min_point = 11

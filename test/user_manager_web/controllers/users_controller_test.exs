@@ -2,8 +2,11 @@ defmodule UserManagerWeb.UsersControllerTest do
   use UserManagerWeb.ConnCase, async: false
 
   alias UserManager.Factories.UserFactory
+  alias UserManager.User.FetcherAgent
 
   setup %{conn: conn} do
+    start_supervised(FetcherAgent)
+
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
