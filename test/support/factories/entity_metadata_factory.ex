@@ -1,6 +1,5 @@
 defmodule UserManager.Factories.EntityMetadataFactory do
   use ExMachina.Ecto, repo: UserManager.Repo
-  alias Faker.Lorem.Shakespeare.En
   alias UserManager.EntityMetadata
 
   def last_time_user_by_min_point_requested_factory do

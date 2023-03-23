@@ -2,6 +2,14 @@ defmodule UserManager.EntityMetadata do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @type t :: %__MODULE__{
+          id: integer(),
+          entity_name: Ecto.Enum,
+          entity_value: String.t(),
+          inserted_at: NaiveDateTime.t(),
+          updated_at: NaiveDateTime.t()
+        }
+
   @required_fields [:entity_name, :entity_value]
   @possible_metadata [
     :last_time_user_by_min_point_requested
