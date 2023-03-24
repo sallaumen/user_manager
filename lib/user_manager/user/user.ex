@@ -2,7 +2,7 @@ defmodule UserManager.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @updatable_fields [:points]
+  @updatable_fields [:points, :inserted_at, :updated_at]
 
   @type t :: %__MODULE__{
           id: integer(),
