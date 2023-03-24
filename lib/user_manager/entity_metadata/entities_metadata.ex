@@ -1,10 +1,8 @@
 defmodule UserManager.EntityMetadata.EntitiesMetadata do
   require Logger
 
-  import Ecto.Query
   alias UserManager.EntityMetadata
   alias UserManager.Repo
-  alias UserManager.User
 
   @spec find_by_name(entity_name :: String.t() | atom()) :: EntityMetadata.t() | nil
   def find_by_name(entity_name) do

@@ -28,3 +28,6 @@ PS: In case you don't have docker, just ensure you have postgres running and con
 
 #### Now you can visit [`localhost:4000`](http://localhost:4000) from your browser to test the API locally.
 
+## Tests
+
+To run project's tests just ensure postgres is running and run `mix test`.
