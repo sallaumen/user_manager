@@ -22,7 +22,7 @@ config :user_manager, UserManager.QuantumScheduler,
   debug_logging: true,
   overlap: false,
   jobs: [
-    {"* * * * *", {UserManager.User.Updater, :update_all_points, []}}
+    {"* * * * *", {UserManager.User.PointsUpdater, :update_all_points, []}}
   ]
 
 config :user_manager, dev_routes: true

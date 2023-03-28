@@ -1,9 +1,9 @@
-defmodule UserManager.User.UpdaterTest do
+defmodule UserManager.User.PointsUpdaterTest do
   use UserManager.DataCase
   alias UserManager.Factories.UserFactory
   alias UserManager.Repo
   alias UserManager.User
-  alias UserManager.User.Updater
+  alias UserManager.User.PointsUpdater
 
   describe "update_all_points/0" do
     test "when user exists, should increase 0 or more for every user" do
@@ -11,7 +11,7 @@ defmodule UserManager.User.UpdaterTest do
       user_2 = UserFactory.insert(:user, points: 0)
       user_3 = UserFactory.insert(:user, points: 0)
       :timer.sleep(1_000)
-      assert {_table_size = 3, _, _} = Updater.update_all_points()
+      assert {_table_size = 3, _, _} = PointsUpdater.update_all_points()
 
       user_1_new = Repo.get(User, user_1.id)
       user_2_new = Repo.get(User, user_2.id)
@@ -24,7 +24,7 @@ defmodule UserManager.User.UpdaterTest do
     end
 
     test "when no user exists, should not update anything" do
-      assert {_table_size = 0, _, _} = Updater.update_all_points()
+      assert {_table_size = 0, _, _} = PointsUpdater.update_all_points()
     end
   end
 end
