@@ -21,6 +21,6 @@ if config_env() == :prod do
     debug_logging: true,
     overlap: false,
     jobs: [
-      {"* * * * *", {UserManager.User.Updater, :update_all_points, []}}
+      {"* * * * *", {UserManager.User.PointsUpdater, :update_all_points, []}}
     ]
 end

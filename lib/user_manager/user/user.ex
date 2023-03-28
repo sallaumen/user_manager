@@ -2,7 +2,8 @@ defmodule UserManager.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @updatable_fields [:points, :inserted_at, :updated_at]
+  @required_fields [:points]
+  @optional_fields [:inserted_at, :updated_at]
 
   @type t :: %__MODULE__{
           id: integer(),
@@ -19,7 +20,7 @@ defmodule UserManager.User do
 
   def changeset(users, attrs) do
     users
-    |> cast(attrs, @updatable_fields)
-    |> validate_required(@updatable_fields)
+    |> cast(attrs, @required_fields ++ @optional_fields)
+    |> validate_required(@required_fields)
   end
 end

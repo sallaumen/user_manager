@@ -1,13 +1,13 @@
-defmodule UserManager.User.Updater do
-  import Ecto.Query
+defmodule UserManager.User.PointsUpdater do
   require Logger
 
   alias UserManager.Repo
   alias UserManager.User
+  alias UserManager.Users
 
-  @batch_size 500
+  @batch_size 5000
   @max_update_point 100
-  @update_max_threads 8
+  @update_max_threads 4
 
   @spec update_all_points() :: {table_size :: integer(), num_batches :: integer(), exec_time :: integer()}
   def update_all_points do
@@ -39,49 +39,23 @@ defmodule UserManager.User.Updater do
 
   defp do_update(num_batches, _) do
     0..(num_batches - 1)
-    |> Enum.chunk_every(@update_max_threads)
-    |> Enum.map(fn batches ->
+    |> Stream.chunk_every(@update_max_threads)
+    |> Stream.map(fn batch_numbers ->
       Task.async_stream(
-        batches,
-        &insert_batch_in_transaction/1,
+        batch_numbers,
+        &update_batch/1,
         max_concurrency: @update_max_threads
       )
       |> Enum.to_list()
     end)
+    |> Stream.run()
   end
 
-  defp insert_batch_in_transaction(batch) do
-    Repo.transaction(fn ->
-      insert_batch(batch)
-    end)
-  end
+  defp update_batch(batch_number) do
+    batch_from_id = batch_number * @batch_size + 1
+    batch_to_id = (batch_number + 1) * @batch_size
 
-  defp insert_batch(batch_num) do
-    update_sql = create_multi_line_update(batch_num)
-
-    Repo.insert_all(User, update_sql, conflict_target: :id, on_conflict: {:replace, [:points, :updated_at]})
-  end
-
-  defp create_multi_line_update(batch_num) do
-    offset = batch_num * @batch_size
-
-    Repo.stream(from u in User, limit: @batch_size, offset: ^offset)
-    |> Task.async_stream(&update_points_and_prepare_data_to_update/1, max_concurrency: 4)
-    |> Enum.map(fn {:ok, updated_user} -> updated_user end)
-  end
-
-  defp update_points_and_prepare_data_to_update(user) do
-    new_points = user.points + generate_random_point_from_zero_to_max(@max_update_point)
-
-    user
-    |> Map.put(:points, new_points)
-    |> Map.put(:updated_at, NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second))
-    |> Map.from_struct()
-    |> Map.drop([:__meta__])
-  end
-
-  defp generate_random_point_from_zero_to_max(max) do
-    :rand.uniform(_range = max + 1) - 1
+    Users.update_all_points_in_range_by_max_rand(batch_from_id, batch_to_id, @max_update_point)
   end
 
   defp log_execution_result(table_size, num_batches, exec_time) do

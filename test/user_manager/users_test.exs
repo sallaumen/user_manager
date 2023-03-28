@@ -1,4 +1,4 @@
-defmodule UserManager.UserTest do
+defmodule UserManager.UsersTest do
   use UserManager.DataCase
   alias UserManager.Factories.UserFactory
   alias UserManager.Users
@@ -85,6 +85,45 @@ defmodule UserManager.UserTest do
       fake_user = UserFactory.build(:user, id: fake_id, points: 5)
 
       assert {:error, _} = Users.update_user(fake_user, %{points: 10})
+    end
+  end
+
+  describe "update_all_points_in_range_by_max_rand/3" do
+    test "when user in range, should update user points and updated_at" do
+      user = UserFactory.insert(:user, updated_at: ~N|2022-01-01 00:00:00|)
+
+      assert {1, [new_points]} = Users.update_all_points_in_range_by_max_rand(user.id, user.id, 999_999)
+      {:ok, updated_user} = Users.fetch_user_by_id(user.id)
+
+      refute updated_user.updated_at == user.updated_at
+      assert updated_user.points == new_points
+    end
+
+    test "when user not in range, should not update user points and updated_at" do
+      user = UserFactory.insert(:user, updated_at: ~N|2022-01-01 00:00:00|)
+      from_id = user.id + 1
+      to_id = user.id + 100
+
+      assert {0, []} == Users.update_all_points_in_range_by_max_rand(from_id, to_id, 999_999)
+      {:ok, not_updated_user} = Users.fetch_user_by_id(user.id)
+
+      assert not_updated_user.updated_at == user.updated_at
+    end
+
+    test "when more than one user in range, should update users points and updated_ats" do
+      user_1 = UserFactory.insert(:user, updated_at: ~N|2022-01-01 00:00:00|)
+      user_2 = UserFactory.insert(:user, updated_at: ~N|2022-01-01 00:00:00|)
+      user_3 = UserFactory.insert(:user, updated_at: ~N|2022-01-01 00:00:00|)
+
+      assert {2, _} = Users.update_all_points_in_range_by_max_rand(user_2.id, user_3.id, 100)
+
+      {:ok, not_updated_user_1} = Users.fetch_user_by_id(user_1.id)
+      {:ok, updated_user_2} = Users.fetch_user_by_id(user_2.id)
+      {:ok, updated_user_3} = Users.fetch_user_by_id(user_3.id)
+
+      assert not_updated_user_1.updated_at == user_1.updated_at
+      assert updated_user_2.updated_at != user_2.updated_at
+      assert updated_user_3.updated_at != user_3.updated_at
     end
   end
 

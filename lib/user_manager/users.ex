@@ -34,4 +34,24 @@ defmodule UserManager.Users do
     |> User.changeset(attrs)
     |> Repo.update(stale_error_field: :id)
   end
+
+  @spec update_all_points_in_range_by_max_rand(from_id :: integer(), to_id :: integer(), rand_max_points :: integer()) ::
+          Ecto.Multi.t()
+  def update_all_points_in_range_by_max_rand(from_id, to_id, rand_max_points) do
+    User
+    |> where([u], u.id >= ^from_id)
+    |> where([u], u.id <= ^to_id)
+    |> select([u], u.points)
+    |> update([u],
+      set: [
+        points: u.points + ^generate_random_point_from_zero_to_max(rand_max_points),
+        updated_at: ^NaiveDateTime.utc_now()
+      ]
+    )
+    |> Repo.update_all([])
+  end
+
+  defp generate_random_point_from_zero_to_max(max) do
+    :rand.uniform(_range = max + 1) - 1
+  end
 end
