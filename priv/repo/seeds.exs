@@ -13,10 +13,9 @@ require Logger
 alias UserManager.Repo
 alias UserManager.User
 
-# -- Fill `User` table with ~1 million entries
+# -- Fill `User` table with 1 million entries
 
 current_table_size = Repo.aggregate(User, :count, :id)
-
 expected_db_size = 1_000_000
 insert_count = expected_db_size - current_table_size
 
@@ -32,7 +31,7 @@ if insert_count > 0 do
 
     insert =
       if batch != total_batches do
-        Enum.map(0..insert_batch_size, fn _ -> %{points: 0, inserted_at: now, updated_at: now} end)
+        Enum.map(1..insert_batch_size, fn _ -> %{points: 0, inserted_at: now, updated_at: now} end)
       else
         current_table_size = Repo.aggregate(User, :count, :id)
 
