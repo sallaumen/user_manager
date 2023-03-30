@@ -7,7 +7,7 @@ defmodule UserManager.User.PointsUpdater do
 
   @batch_size 500
   @max_update_point 100
-  @update_max_threads 4
+  @update_max_threads 8
 
   @spec update_all_points() :: {table_size :: integer(), num_batches :: integer(), exec_time :: integer()}
   def update_all_points do
