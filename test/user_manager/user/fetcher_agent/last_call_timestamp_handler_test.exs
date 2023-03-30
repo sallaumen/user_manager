@@ -39,28 +39,24 @@ defmodule UserManager.User.FetcherAgent.LastCallTimestampHandlerTest do
     test "when metadata exists, should update metadata value and return updated" do
       now = NaiveDateTime.utc_now()
       now_as_string = NaiveDateTime.to_string(now)
-      trunc_now = NaiveDateTime.truncate(now, :second)
 
       EntityMetadataFactory.insert(:last_time_user_by_min_point_requested, entity_value: "test")
 
       assert {:ok,
               %{
                 entity_name: :last_time_user_by_min_point_requested,
-                entity_value: ^now_as_string,
-                updated_at: ^trunc_now
+                entity_value: ^now_as_string
               }} = LastCallTimestampHandler.persist_current_call_datetime(now_as_string)
     end
 
     test "when metadata does not exist, should create new metadata" do
       now = NaiveDateTime.utc_now()
       now_as_string = NaiveDateTime.to_string(now)
-      trunc_now = NaiveDateTime.truncate(now, :second)
 
       assert {:ok,
               %{
                 entity_name: :last_time_user_by_min_point_requested,
-                entity_value: ^now_as_string,
-                updated_at: ^trunc_now
+                entity_value: ^now_as_string
               }} = LastCallTimestampHandler.persist_current_call_datetime(now_as_string)
     end
   end

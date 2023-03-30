@@ -81,7 +81,7 @@ defmodule UserManager.UsersTest do
     end
 
     test "when user does not exist, should return {:error, detail} tuple" do
-      fake_id = 9999
+      fake_id = 9_999
       fake_user = UserFactory.build(:user, id: fake_id, points: 5)
 
       assert {:error, _} = Users.update_user(fake_user, %{points: 10})
@@ -115,7 +115,7 @@ defmodule UserManager.UsersTest do
       user_2 = UserFactory.insert(:user, updated_at: ~N|2022-01-01 00:00:00|)
       user_3 = UserFactory.insert(:user, updated_at: ~N|2022-01-01 00:00:00|)
 
-      assert {:ok, _} = Users.update_all_points_in_range_by_max_rand(user_2.id, user_3.id, 999_99)
+      assert {:ok, _} = Users.update_all_points_in_range_by_max_rand(user_2.id, user_3.id, 999_999)
 
       {:ok, not_updated_user_1} = Users.fetch_user_by_id(user_1.id)
       {:ok, updated_user_2} = Users.fetch_user_by_id(user_2.id)
