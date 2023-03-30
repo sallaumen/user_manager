@@ -42,4 +42,6 @@ if insert_count > 0 do
 
     Repo.insert_all(User, insert)
   end)
+else
+  Logger.info("Skipping User seed since table already has #{current_table_size} entries.")
 end

@@ -1,5 +1,6 @@
 defmodule UserManager.Users do
   import Ecto.Query
+  alias Ecto.Multi
   alias UserManager.Repo
   alias UserManager.User
 
@@ -36,20 +37,24 @@ defmodule UserManager.Users do
   end
 
   @spec update_all_points_in_range_by_max_rand(from_id :: integer(), to_id :: integer(), rand_max_points :: integer()) ::
-          Ecto.Multi.t()
+          Multi.t()
   def update_all_points_in_range_by_max_rand(from_id, to_id, rand_max_points) do
-    User
-    |> where([u], u.id >= ^from_id)
-    |> where([u], u.id <= ^to_id)
-    |> select([u], u.points)
-    |> update([u],
-      set: [
-        points: u.points + ^generate_random_point_from_zero_to_max(rand_max_points),
-        updated_at: ^NaiveDateTime.utc_now()
-      ]
-    )
-    |> Repo.update_all([])
+    Multi.new()
+    |> Multi.run(:get_users, fn _, _ ->
+      {:ok, query_all_in_range(from_id, to_id)}
+    end)
+    |> Multi.run(:update_users, fn _, %{get_users: users} ->
+      result =
+        Enum.map(users, fn user ->
+          update_user(user, %{points: user.points + generate_random_point_from_zero_to_max(rand_max_points)})
+        end)
+
+      {:ok, result}
+    end)
+    |> Repo.transaction()
   end
+
+  defp query_all_in_range(from_id, to_id), do: Repo.all(from u in User, where: u.id >= ^from_id and u.id <= ^to_id)
 
   defp generate_random_point_from_zero_to_max(max) do
     :rand.uniform(_range = max + 1) - 1
