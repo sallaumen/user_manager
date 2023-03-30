@@ -5,7 +5,7 @@ defmodule UserManager.User.PointsUpdater do
   alias UserManager.User
   alias UserManager.Users
 
-  @batch_size 5000
+  @batch_size 500
   @max_update_point 100
   @update_max_threads 4
 

@@ -92,11 +92,11 @@ defmodule UserManager.UsersTest do
     test "when user in range, should update user points and updated_at" do
       user = UserFactory.insert(:user, updated_at: ~N|2022-01-01 00:00:00|)
 
-      assert {1, [new_points]} = Users.update_all_points_in_range_by_max_rand(user.id, user.id, 999_999)
+      assert {:ok, _} = Users.update_all_points_in_range_by_max_rand(user.id, user.id, 999_999)
       {:ok, updated_user} = Users.fetch_user_by_id(user.id)
 
       refute updated_user.updated_at == user.updated_at
-      assert updated_user.points == new_points
+      assert updated_user.points != user.points
     end
 
     test "when user not in range, should not update user points and updated_at" do
@@ -104,7 +104,7 @@ defmodule UserManager.UsersTest do
       from_id = user.id + 1
       to_id = user.id + 100
 
-      assert {0, []} == Users.update_all_points_in_range_by_max_rand(from_id, to_id, 999_999)
+      assert {:ok, _} = Users.update_all_points_in_range_by_max_rand(from_id, to_id, 999_999)
       {:ok, not_updated_user} = Users.fetch_user_by_id(user.id)
 
       assert not_updated_user.updated_at == user.updated_at
@@ -115,7 +115,7 @@ defmodule UserManager.UsersTest do
       user_2 = UserFactory.insert(:user, updated_at: ~N|2022-01-01 00:00:00|)
       user_3 = UserFactory.insert(:user, updated_at: ~N|2022-01-01 00:00:00|)
 
-      assert {2, _} = Users.update_all_points_in_range_by_max_rand(user_2.id, user_3.id, 100)
+      assert {:ok, _} = Users.update_all_points_in_range_by_max_rand(user_2.id, user_3.id, 999_99)
 
       {:ok, not_updated_user_1} = Users.fetch_user_by_id(user_1.id)
       {:ok, updated_user_2} = Users.fetch_user_by_id(user_2.id)
@@ -124,6 +124,8 @@ defmodule UserManager.UsersTest do
       assert not_updated_user_1.updated_at == user_1.updated_at
       assert updated_user_2.updated_at != user_2.updated_at
       assert updated_user_3.updated_at != user_3.updated_at
+      assert user_1.points == not_updated_user_1.points
+      assert user_2.points != updated_user_2.points or user_3.points != updated_user_3.points
     end
   end
 
